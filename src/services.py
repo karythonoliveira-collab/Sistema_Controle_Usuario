@@ -53,12 +53,52 @@ def editar_usuario(id):
     except Exception as e:
         print(f'Falha ao criar usuario: {e}')
 
-def listar_usuario_email(email):
+def login(email, senha):
     try:
         conn = get_connet()
         cursor = conn.cursor()
+
+        senha_hash = sha256.hash(senha)
+        usuario_encontrado = cursor.execute('SELECT email, senha FROM TB_USUARIO where email = ? AND senha = ?', (email, senha_hash))
+        usuario_encontrado = cursor.fetchone()
+
+        if usuario_encontrado:
+            print('Login realizado com sucesso!')
+            return True
+        else:
+            print("Erro ao realizar login! E-mail ou senha inválidos!")
+            return False
     except Exception as e:
-        print(f'Falha ao criar usuario: {e}')
+        print('Erro ao fazer login!', str(e))
+
+    finally:
+        conn.close()
+
+def vender(id_produto, qtd_saida):
+    try:
+        conn = get_connet()
+        cursor = conn.cursor()
+        
+        qtd = cursor.execute('SELECT qtd FROM TB_PRODUTO WHERE id = ?', (id_produto,))
+        cursor.fetchone()
+
+        if not qtd:
+            print('Produto não encontrado')
+            return None
+
+        if qtd > 0:
+            if qtd > qtd_saida:
+                quantidade_restante = qtd - qtd_saida 
+            else:
+                print('Quantidade inserida maior do que a disponível')
+        else:
+            print('O produto selecionado não tem no estoque')
+
+        cursor.execute('UPDATE SET qtd = ? WHERE id = ?', (quantidade_restante, id_produto))
+        conn.commit()
+
+    except Exception as e:
+        print('Erro ao dar baixa no produto!')
 
 def listar_usuario_id(id):
     try:
