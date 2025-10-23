@@ -13,15 +13,17 @@ def vender(id_produto, qtd_saida):
             return None
 
         qtd = qtd[0]
-        if qtd >= 0:
-            if qtd > qtd_saida:
-                quantidade_restante = qtd - qtd_saida 
-            else:
-                print('Quantidade inserida maior do que a disponível')
-        else:
+        if qtd <= 0:
             print('O produto selecionado não tem no estoque')
+            return None
 
-        cursor.execute('UPDATE TB_PRODUTO SET qtd = ? WHERE id = ?', (quantidade_restante, id_produto))
+        if qtd < qtd_saida:
+            print('Quantidade inserida maior do que a disponível')
+            return None
+
+        quantidade_restante = qtd - qtd_saida
+
+        cursor.execute('UPDATE TB_PRODUTO SET quantidade = ? WHERE id = ?', (quantidade_restante, id_produto))
         conn.commit()
         print(f'Venda realizada com sucesso! Restam {quantidade_restante} unidades.')
 
@@ -59,12 +61,13 @@ def listar_produto():
     try:
         conn = get_connet()
         cursor = conn.cursor()
-        cursor.execute('SELECT descricao, quantidade, preco FROM TB_PRODUTO')
+        cursor.execute('SELECT id, descricao, quantidade, preco FROM TB_PRODUTO ORDER BY id')
         produtos = cursor.fetchall()
 
         if produtos:
             for u in produtos:
-                print(f'| {u}')
+                # u = (id, descricao, quantidade, preco)
+                print(f'| ID: {u[0]} | Descrição: {u[1]} | Quantidade: {u[2]} | Preço: {u[3]}')
         else:
             print('Nenhum produto encontrado!')
 
@@ -118,13 +121,13 @@ def listar_produto_id(id):
     try:
         conn = get_connet()
         cursor = conn.cursor()
-        produtos = cursor.execute('SELECT descricao, preco, quantidade FROM TB_PRODUTO WHERE id = ?', (id,))
+        cursor.execute('SELECT id, descricao, preco, quantidade FROM TB_PRODUTO WHERE id = ?', (id,))
         produtos = cursor.fetchone()
 
         if produtos:
-            print(f'{30*'-'}Lista de produtos!{30*'-'}')
-            for u in produtos:
-                print(f'| {u}')
+            # produtos = (id, descricao, preco, quantidade)
+            print(f"{'-'*30} Produto selecionado {'-'*30}")
+            print(f'| ID: {produtos[0]} | Descrição: {produtos[1]} | Preço: {produtos[2]} | Quantidade: {produtos[3]}')
         else:
             print('Nenhum produto encontrado!')
 
@@ -142,12 +145,13 @@ def listar_produto_nome(produto):
     try:
         conn = get_connet()
         cursor = conn.cursor()
-        produtos = cursor.execute('SELECT descricao, preco, quantidade FROM TB_PRODUTO WHERE descricao = ?', (produto,))
-        produtos = cursor.fetchone()
+        cursor.execute('SELECT id, descricao, preco, quantidade FROM TB_PRODUTO WHERE descricao = ?', (produto,))
+        produtos = cursor.fetchall()
 
         if produtos:
             for u in produtos:
-                print(f'| {u}')
+                # u = (id, descricao, preco, quantidade)
+                print(f'| ID: {u[0]} | Descrição: {u[1]} | Preço: {u[2]} | Quantidade: {u[3]}')
         else:
             print('Nenhum produto encontrado!')
 
@@ -164,13 +168,12 @@ def criar_tabela():
     try:
         conn = get_connet()
         cursor = conn.cursor()
-
         cursor.execute('''
-        CREATE TABLE TB_PRODUTO(
-            ID INTEGER PRIMARY KEY,
+        CREATE TABLE IF NOT EXISTS TB_PRODUTO(
+            ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            descricao VARCHAR(50),
             quantidade INTEGER NOT NULL,
-            preco FLOAT,
-            descricao VARCHAR(50)
+            preco FLOAT
         );
         ''')
 
