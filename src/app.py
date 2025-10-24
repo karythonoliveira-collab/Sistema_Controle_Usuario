@@ -42,7 +42,6 @@ def main():
                                 barra_progresso()
                                 break
 
-
                     except Exception as e:
                         print('A opção não e um numero inteiro!')
 

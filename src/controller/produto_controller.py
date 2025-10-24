@@ -31,7 +31,7 @@ def gerenciar_produto():
                     preco = float(preco)
                     quantidade = int(quantidade)
                     # ordem correta: descricao, quantidade, preco (conforme serviço)
-                    produto_service.criar_produto(descricao, quantidade, preco)
+                    produto_service.criar_produto(descricao, preco, quantidade)
                 except Exception as e:
                     print('Erro ao cadastrar produto!', str(e))
 

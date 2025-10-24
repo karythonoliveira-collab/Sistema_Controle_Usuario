@@ -61,13 +61,13 @@ def listar_produto():
     try:
         conn = get_connet()
         cursor = conn.cursor()
-        cursor.execute('SELECT id, descricao, quantidade, preco FROM TB_PRODUTO ORDER BY id')
+        cursor.execute('SELECT id, descricao, preco, quantidade FROM TB_PRODUTO ORDER BY id')
         produtos = cursor.fetchall()
 
         if produtos:
             for u in produtos:
                 # u = (id, descricao, quantidade, preco)
-                print(f'| ID: {u[0]} | Descrição: {u[1]} | Quantidade: {u[2]} | Preço: {u[3]}')
+                print(f'| ID: {u[0]} | Descrição: {u[1]} | Quantidade: {u[2]:.0f} | Preço: R${u[3]:.2f}')
         else:
             print('Nenhum produto encontrado!')
 
