@@ -41,7 +41,7 @@ def criar_produto(descricao, quantidade, preco):
     try:
         conn = get_connet()
         cursor = conn.cursor()
-        cursor.execute('INSERT INTO TB_PRODUTO(descricao, quantidade, preco) VALUES (?, ?, ?)',
+        cursor.execute('INSERT INTO TB_PRODUTO(descricao, preco, quantidade) VALUES (?, ?, ?)',
                        (descricao, quantidade, preco)
         )
         conn.commit()
@@ -67,7 +67,7 @@ def listar_produto():
         if produtos:
             for u in produtos:
                 # u = (id, descricao, quantidade, preco)
-                print(f'| ID: {u[0]} | Descrição: {u[1]} | Quantidade: {u[2]:.0f} | Preço: R${u[3]:.2f}')
+                print(f'| ID: {u[0]} | Descrição: {u[1]} | Preço: R${u[3]:.2f} | Quantidade: {u[2]:.0f}')
         else:
             print('Nenhum produto encontrado!')
 
@@ -171,9 +171,10 @@ def criar_tabela():
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS TB_PRODUTO(
             ID INTEGER PRIMARY KEY AUTOINCREMENT,
-            descricao VARCHAR(50),
-            quantidade INTEGER NOT NULL,
-            preco FLOAT
+            descricao VARCHAR(50),      
+            preco float NOT NULL,
+            quantidade INTEGER NOT NULL
+            
         );
         ''')
 
