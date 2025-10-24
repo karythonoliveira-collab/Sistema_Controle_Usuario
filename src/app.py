@@ -56,4 +56,8 @@ def main():
 
     
 if __name__ == '__main__':
+    from services.produto_service import criar_tabela
+    from services.usuario_service import criar_tabela_usuario
+    criar_tabela_usuario()
+    criar_tabela()
     main()

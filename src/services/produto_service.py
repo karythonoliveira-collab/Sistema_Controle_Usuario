@@ -37,12 +37,12 @@ def vender(id_produto, qtd_saida):
             conn.close()
 
 
-def criar_produto(descricao, quantidade, preco):
+def criar_produto(descricao, preco, quantidade):
     try:
         conn = get_connet()
         cursor = conn.cursor()
         cursor.execute('INSERT INTO TB_PRODUTO(descricao, preco, quantidade) VALUES (?, ?, ?)',
-                       (descricao, quantidade, preco)
+                       (descricao, preco, quantidade)
         )
         conn.commit()
         print('Produto cadastrado com sucesso!')
@@ -67,7 +67,7 @@ def listar_produto():
         if produtos:
             for u in produtos:
                 # u = (id, descricao, quantidade, preco)
-                print(f'| ID: {u[0]} | Descrição: {u[1]} | Preço: R${u[3]:.2f} | Quantidade: {u[2]:.0f}')
+                print(f'| ID: {u[0]} | Descrição: {u[1]} | Preço: R${u[2]:.2f} | Quantidade: {u[3]:.0f}')
         else:
             print('Nenhum produto encontrado!')
 
@@ -127,7 +127,7 @@ def listar_produto_id(id):
         if produtos:
             # produtos = (id, descricao, preco, quantidade)
             print(f"{'-'*30} Produto selecionado {'-'*30}")
-            print(f'| ID: {produtos[0]} | Descrição: {produtos[1]} | Preço: {produtos[2]} | Quantidade: {produtos[3]}')
+            print(f'| ID: {produtos[0]} | Descrição: {produtos[1]} | Preço: R${produtos[2]} | Quantidade: {produtos[3]}')
         else:
             print('Nenhum produto encontrado!')
 
@@ -151,7 +151,7 @@ def listar_produto_nome(produto):
         if produtos:
             for u in produtos:
                 # u = (id, descricao, preco, quantidade)
-                print(f'| ID: {u[0]} | Descrição: {u[1]} | Preço: {u[2]} | Quantidade: {u[3]}')
+                print(f'| ID: {u[0]} | Descrição: {u[1]} | Preço: R${u[2]} | Quantidade: {u[3]}')
         else:
             print('Nenhum produto encontrado!')
 
