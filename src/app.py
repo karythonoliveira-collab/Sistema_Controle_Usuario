@@ -1,4 +1,5 @@
 from controller import produto_controller, usuario_controller
+from src.models.usuario_model import Usuario
 import pwinput
 import os
 from services.barra_progresso import barra_progresso
@@ -42,6 +43,7 @@ def main():
                                 barra_progresso()
                                 break
 
+
                     except Exception as e:
                         print('A opção não e um numero inteiro!')
 
@@ -52,12 +54,9 @@ def main():
             email = input('Digite seu email: ').strip().lower()
             senha = pwinput.pwinput('Digite sua senha: ').strip()
 
-            usuario_controller.usuario_service.criar_usuario(nome, email, senha)
+            usuario = Usuario(nome=nome, email=email, senha=senha)
+            usuario_controller.usuario_service.criar_usuario(usuario)
 
     
 if __name__ == '__main__':
-    from services.produto_service import criar_tabela
-    from services.usuario_service import criar_tabela_usuario
-    criar_tabela_usuario()
-    criar_tabela()
     main()
